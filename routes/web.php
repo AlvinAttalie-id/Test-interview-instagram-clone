@@ -5,6 +5,8 @@ use App\Http\Controllers\FeedController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePageController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MediaPostController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,10 +29,14 @@ Route::middleware('auth')->group(function () {
 
     // Komentar pada media post
     Route::post('/media-posts/{mediaPost}/comments', [CommentController::class, 'store'])->name('comments.store');
+    // Media Post (Tambah Post)
+    Route::get('/media-posts/create', [MediaPostController::class, 'create'])->name('media-posts.create');
+    Route::post('/media-posts', [MediaPostController::class, 'store'])->name('media-posts.store');
+
 
 
     Route::get('/my-profile', [ProfilePageController::class, 'index'])->name('profile.page');
-    Route::post('/media-post', [ProfilePageController::class, 'store'])->name('media-post.store');
+    Route::resource('media-posts', MediaPostController::class)->only(['index', 'create', 'store'])->middleware('auth');
 });
 
 // ✅ Route Khusus Admin

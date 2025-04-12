@@ -1,0 +1,42 @@
+/* IG Grid Styles */
+.ig-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+
+.ig-grid-item {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* ini bikin aspek rasio 1:1 tanpa height fix */
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.ig-grid-item img,
+.ig-grid-item video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+    display: block;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .ig-grid {
+        grid-template-columns: repeat(3, 1fr); /* tetap 3 kolom */
+    }
+}
+
+@media (max-width: 480px) {
+    .ig-grid {
+        grid-template-columns: repeat(3, 1fr); /* tetap 3 kolom */
+    }
+}

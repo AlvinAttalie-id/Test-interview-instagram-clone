@@ -6,15 +6,13 @@
     </x-slot>
 
     <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        {{-- Flex baris antara foto dan informasi --}}
+        {{-- Foto Profil dan Info --}}
         <div class="flex flex-col md:flex-row md:items-start md:space-x-10">
-            {{-- Foto Profil (UKURAN TIDAK DIUBAH) --}}
             <div class="w-20 h-20 overflow-hidden border border-gray-300 rounded-full shadow md:w-24 md:h-24">
                 <img src="{{ $user->profileSetting?->profile_picture ? asset('storage/' . $user->profileSetting->profile_picture) : $user->profile_photo_url }}"
                     alt="{{ $user->username }}" class="object-cover w-full h-full">
             </div>
 
-            {{-- Info Profil & Posts --}}
             <div class="flex-1 mt-4 md:mt-0">
                 <div class="flex flex-col mb-4 md:flex-row md:items-center md:space-x-6">
                     <h1 class="text-2xl font-semibold">{{ $user->username }}</h1>
@@ -52,18 +50,15 @@
         </div>
 
         {{-- Grid Postingan --}}
-        <div class="grid grid-cols-2 gap-4 mt-10 md:grid-cols-3">
-            @forelse ($user->mediaPosts as $post)
-                <div class="overflow-hidden border rounded">
-                    @if ($post->media_type === 'image')
-                        <img src="{{ asset('storage/' . $post->file_path) }}" class="object-cover w-full h-48">
-                    @elseif ($post->media_type === 'video')
-                        <video controls class="object-cover w-full h-48">
+        <div class="mt-10 ig-grid">
+            @forelse ($posts as $post)
+                <div class="ig-grid-item">
+                    @if ($post->file_type === 'image')
+                        <img src="{{ asset('storage/' . $post->file_path) }}" alt="Post image">
+                    @elseif ($post->file_type === 'video')
+                        <video controls>
                             <source src="{{ asset('storage/' . $post->file_path) }}">
                         </video>
-                    @endif
-                    @if ($post->caption)
-                        <div class="p-2 text-sm text-gray-600">{{ $post->caption }}</div>
                     @endif
                 </div>
             @empty
@@ -71,4 +66,12 @@
             @endforelse
         </div>
     </div>
+
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/ig-grid.css') }}">
+    @endpush
+
+    @push('scripts')
+        <script src="{{ asset('js/ig-grid.js') }}" defer></script>
+    @endpush
 </x-app-layout>

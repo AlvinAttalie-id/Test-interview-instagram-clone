@@ -16,8 +16,12 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('feed.index')" :active="request()->routeIs('feed.index')">
-                        {{ __('Feed') }}
+                    <x-nav-link :href="route('media-posts.index')" :active="request()->routeIs('media-posts')">
+                        {{ __('Media Posts') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('media-posts.create')" :active="request()->routeIs('media-posts.create')">
+                        {{ __('Add Post') }}
                     </x-nav-link>
 
                     <!-- My Profile (Menu ke /my-profile) -->
@@ -86,6 +90,15 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('media-posts.index')" :active="request()->routeIs('media-posts.*')">
+                {{ __('Media Posts') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('media-posts.create')" :active="request()->routeIs('media-posts.create')">
+                {{ __('Add Post') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('profile.page')" :active="request()->routeIs('profile.page')">
+                {{ __('My Profile') }}
             </x-responsive-nav-link>
         </div>
 

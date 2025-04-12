@@ -14,10 +14,11 @@ class ProfilePageController extends Controller
     {
         $user = auth()->user();
         $posts = MediaPost::where('user_id', $user->id)->latest()->get();
-        $feedPerRow = $user->feed_per_row ?? 3;
+        $feedPerRow = $user->feed_per_row ?? 3; // Default 3 per row jika tidak ada pengaturan
 
         return view('profile.index', compact('user', 'posts', 'feedPerRow'));
     }
+
 
     public function store(Request $request)
     {
