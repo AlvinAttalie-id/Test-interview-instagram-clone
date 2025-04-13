@@ -7,7 +7,6 @@ use App\Http\Controllers\ProfilePageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MediaPostController;
 
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -29,27 +28,29 @@ Route::middleware('auth')->group(function () {
 
     // Komentar pada media post
     Route::post('/media-posts/{mediaPost}/comments', [CommentController::class, 'store'])->name('comments.store');
+
     // Media Post (Tambah Post)
     Route::get('/media-posts/create', [MediaPostController::class, 'create'])->name('media-posts.create');
     Route::post('/media-posts', [MediaPostController::class, 'store'])->name('media-posts.store');
 
-
-
     Route::get('/my-profile', [ProfilePageController::class, 'index'])->name('profile.page');
-    Route::resource('media-posts', MediaPostController::class)->only(['index', 'create', 'store'])->middleware('auth');
+
+    // Menampilkan media posts dengan pagination untuk infinite scroll
+    Route::get('/media-posts/load', [MediaPostController::class, 'loadMorePosts'])->name('media-posts.load');
+    Route::resource('media-posts', MediaPostController::class)->only(['index', 'create', 'store']);
 });
 
 // ✅ Route Khusus Admin
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard'); // Buat file di resources/views/admin/dashboard.blade.php
+        return view('admin.dashboard');
     })->name('admin.dashboard');
 });
 
 // ✅ Route Khusus User Biasa
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/dashboard', function () {
-        return view('user.dashboard'); // Buat file di resources/views/user/dashboard.blade.php
+        return view('user.dashboard');
     })->name('user.dashboard');
 });
 

@@ -9,7 +9,7 @@ class MediaPostController extends Controller
 {
     public function index()
     {
-        $posts = MediaPost::with(['user', 'likes', 'comments'])->latest()->paginate(12);
+        $posts = MediaPost::latest()->paginate(3); // awal juga harus 3 agar konsisten
         return view('media-posts.index', compact('posts'));
     }
 
@@ -39,5 +39,28 @@ class MediaPostController extends Controller
         ]);
 
         return redirect()->route('media-posts.index')->with('success', 'Post berhasil ditambahkan.');
+    }
+
+    // Fungsi untuk memuat lebih banyak post
+    public function loadMorePosts(Request $request)
+    {
+        $posts = MediaPost::latest()->paginate(3); // atau 5, sesuai kebutuhan
+
+        if ($request->ajax()) {
+            $html = '';
+
+            // Loop semua post dan render satu per satu menggunakan partial
+            foreach ($posts as $post) {
+                $html .= view('media-posts.partials.post', compact('post'))->render();
+            }
+
+            return response()->json([
+                'html' => $html,
+                'next_page' => $posts->currentPage() + 1,
+                'has_more' => $posts->hasMorePages(),
+            ]);
+        }
+
+        return view('media-posts.index', compact('posts'));
     }
 }

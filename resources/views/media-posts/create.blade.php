@@ -18,6 +18,26 @@
 
         <form action="{{ route('media-posts.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
+
+            <div>
+                <label for="file" class="block text-sm font-medium text-gray-700">File Media (image/video)</label>
+
+                <!-- Custom file input with Tailwind button style -->
+                <label for="file"
+                    class="inline-block px-4 py-2 mt-1 text-white bg-blue-600 rounded cursor-pointer hover:bg-blue-700">
+                    Pilih File
+                </label>
+                <input type="file" name="file" id="file" class="hidden" onchange="previewMedia(event)">
+            </div>
+
+            <!-- Preview Area -->
+            <div id="media-preview" class="hidden mt-4">
+                <p class="mb-2 text-sm font-medium text-gray-600">Preview:</p>
+                <div id="preview-container" class="w-full max-w-md overflow-hidden border rounded">
+                    <!-- Will be filled by JS -->
+                </div>
+            </div>
+
             <div>
                 <label for="caption" class="block text-sm font-medium text-gray-700">Caption</label>
                 <input type="text" name="caption" id="caption"
@@ -25,15 +45,14 @@
             </div>
 
             <div>
-                <label for="file" class="block text-sm font-medium text-gray-700">File Media (image/video)</label>
-                <input type="file" name="file" id="file" class="mt-1">
-            </div>
-
-            <div>
-                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
+                <button type="submit" class="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
                     Upload
                 </button>
             </div>
         </form>
     </div>
+
+    @push('scripts')
+        <script src="{{ asset('js/media-preview.js') }}"></script>
+    @endpush
 </x-app-layout>
