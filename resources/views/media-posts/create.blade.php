@@ -28,13 +28,16 @@
                     Pilih File
                 </label>
                 <input type="file" name="file" id="file" class="hidden" onchange="previewMedia(event)">
+                <p class="mt-2 text-sm text-gray-500">
+                    Hanya file <strong>JPG, JPEG, PNG, MP4, MOV</strong>. Ukuran maksimal <strong>150MB</strong>.
+                </p>
             </div>
 
             <!-- Preview Area -->
             <div id="media-preview" class="hidden mt-4">
                 <p class="mb-2 text-sm font-medium text-gray-600">Preview:</p>
                 <div id="preview-container" class="w-full max-w-md overflow-hidden border rounded">
-                    <!-- Will be filled by JS -->
+
                 </div>
             </div>
 

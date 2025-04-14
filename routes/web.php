@@ -37,6 +37,10 @@ Route::middleware('auth')->group(function () {
     // Resource MediaPost terbatas hanya index, create, store
     Route::resource('media-posts', MediaPostController::class)->only(['index', 'create', 'store']);
 
+    // ✅ Archive Page: menampilkan dan download media post user
+    Route::get('/media-posts/archive', [MediaPostController::class, 'archive'])->name('media-posts.archive');
+    Route::get('/media-posts/archive/download', [MediaPostController::class, 'downloadArchive'])->name('media-posts.downloadArchive');
+
     // My Profile Page
     Route::get('/my-profile', [ProfilePageController::class, 'index'])->name('profile.page');
 

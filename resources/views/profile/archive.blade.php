@@ -6,8 +6,15 @@
     </x-slot>
 
     <div class="max-w-4xl px-4 py-6 mx-auto">
-        <div class="mb-4">
+        {{-- Navigasi kembali dan tombol ke halaman download arsip --}}
+        <div class="flex items-center justify-between mb-4">
             <a href="{{ route('profile.page') }}" class="text-blue-600 hover:underline">&larr; Kembali ke profil</a>
+
+            {{-- Tombol ke halaman arsip yang bisa didownload --}}
+            <a href="{{ route('media-posts.archive') }}"
+                class="inline-block px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">
+                Download Arsip Saya
+            </a>
         </div>
 
         <div class="mt-6">

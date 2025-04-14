@@ -1,6 +1,9 @@
 <div class="post-card">
     <div class="post-username">
         {{ $post->user->name ?? 'Unknown User' }}
+        <span class="block text-sm text-gray-500">
+            {{ \Carbon\Carbon::parse($post->created_at)->translatedFormat('d F Y \p\u\k\u\l H:i') }}
+        </span>
     </div>
     <div class="post-media-wrapper">
         @if ($post->file_type === 'image')

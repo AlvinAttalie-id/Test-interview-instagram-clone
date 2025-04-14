@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\MediaPost;
 use Illuminate\Http\Request;
+use App\Exports\MediaPostsExport;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MediaPostController extends Controller
 {
@@ -22,7 +25,7 @@ class MediaPostController extends Controller
     {
         $request->validate([
             'caption' => 'nullable|string|max:255',
-            'file' => 'required|file|mimes:jpg,jpeg,png,mp4,mov,avi|max:10240', // max 10MB
+            'file' => 'required|file|mimes:jpg,jpeg,png,mp4,mov|max:153600', // max 150MB
         ]);
 
         $file = $request->file('file');
@@ -39,6 +42,45 @@ class MediaPostController extends Controller
         ]);
 
         return redirect()->route('media-posts.index')->with('success', 'Post berhasil ditambahkan.');
+    }
+
+    public function archive(Request $request)
+    {
+        $query = MediaPost::where('user_id', auth()->id());
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $posts = $query->latest()->get();
+
+        return view('media-posts.archive', compact('posts'));
+    }
+
+    public function downloadArchive(Request $request)
+    {
+        $format = $request->get('format', 'pdf');
+
+        $query = MediaPost::where('user_id', auth()->id());
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $posts = $query->latest()->get();
+
+        if ($format === 'xlsx') {
+            return Excel::download(new MediaPostsExport($posts), 'media_posts.xlsx');
+        } else {
+            $pdf = Pdf::loadView('media-posts.exports.pdf', compact('posts'));
+            return $pdf->download('media_posts.pdf');
+        }
     }
 
     // Fungsi untuk memuat lebih banyak post
