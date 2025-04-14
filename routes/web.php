@@ -1,11 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedController;
+use App\Http\Controllers\MediaPostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePageController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MediaPostController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,26 +18,34 @@ Route::get('/dashboard', function () {
 
 // ✅ Route untuk semua user yang login
 Route::middleware('auth')->group(function () {
-    // Profile setting
+    // Pengaturan profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Feed (semua post user)
+    // Feed: menampilkan semua post dari semua user
     Route::get('/feed', [FeedController::class, 'index'])->name('feed.index');
 
-    // Komentar pada media post
+    // Komentar
     Route::post('/media-posts/{mediaPost}/comments', [CommentController::class, 'store'])->name('comments.store');
 
-    // Media Post (Tambah Post)
+    // Media Post (tambah post)
     Route::get('/media-posts/create', [MediaPostController::class, 'create'])->name('media-posts.create');
     Route::post('/media-posts', [MediaPostController::class, 'store'])->name('media-posts.store');
+    // Load more posts untuk infinite scroll
+    Route::get('/media-posts/load', [MediaPostController::class, 'loadMorePosts'])->name('media-posts.load');
+    // Resource MediaPost terbatas hanya index, create, store
+    Route::resource('media-posts', MediaPostController::class)->only(['index', 'create', 'store']);
 
+    // My Profile Page
     Route::get('/my-profile', [ProfilePageController::class, 'index'])->name('profile.page');
 
-    // Menampilkan media posts dengan pagination untuk infinite scroll
-    Route::get('/media-posts/load', [MediaPostController::class, 'loadMorePosts'])->name('media-posts.load');
-    Route::resource('media-posts', MediaPostController::class)->only(['index', 'create', 'store']);
+    // ✅ Route tambahan: Menampilkan detail post pribadi (hanya milik user sendiri)
+    Route::get('/profile/posts/{post}', [ProfilePageController::class, 'show'])->name('profile.posts.show');
+    Route::delete('/profile/posts/{post}/delete', [ProfilePageController::class, 'delete'])->name('profile.posts.delete');
+    Route::get('/profile/archives', [ProfilePageController::class, 'archive'])->name('profile.archive');
+    Route::patch('/profile/posts/{post}/restore', [ProfilePageController::class, 'restore'])->name('profile.posts.restore');
+    Route::delete('/profile/posts/{post}/delete-permanent', [ProfilePageController::class, 'deletePermanent'])->name('profile.posts.delete-permanent');
 });
 
 // ✅ Route Khusus Admin

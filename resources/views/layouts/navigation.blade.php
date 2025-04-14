@@ -24,9 +24,12 @@
                         {{ __('Add Post') }}
                     </x-nav-link>
 
-                    <!-- My Profile (Menu ke /my-profile) -->
                     <x-nav-link :href="route('profile.page')" :active="request()->routeIs('profile.page')">
                         {{ __('My Profile') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('profile.archive')" :active="request()->routeIs('profile.archive')">
+                        {{ __('Archive') }}
                     </x-nav-link>
                 </div>
             </div>

@@ -52,15 +52,15 @@
         {{-- Grid Postingan --}}
         <div class="mt-10 ig-grid">
             @forelse ($posts as $post)
-                <div class="ig-grid-item">
+                <a href="{{ route('profile.posts.show', $post) }}" class="ig-grid-item">
                     @if ($post->file_type === 'image')
                         <img src="{{ asset('storage/' . $post->file_path) }}" alt="Post image">
                     @elseif ($post->file_type === 'video')
-                        <video controls>
+                        <video muted>
                             <source src="{{ asset('storage/' . $post->file_path) }}">
                         </video>
                     @endif
-                </div>
+                </a>
             @empty
                 <div class="text-center text-gray-500 col-span-full">Belum ada postingan.</div>
             @endforelse
