@@ -9,39 +9,11 @@
         <!-- Post List -->
         <div id="post-container" class="space-y-6">
             @foreach ($posts as $post)
-                <div class="post-card">
-                    <div class="post-username">
-                        {{ $post->user->name ?? 'Unknown User' }}
-                        <span class="block text-sm text-gray-500">
-                            {{ \Carbon\Carbon::parse($post->created_at)->translatedFormat('d F Y \p\u\k\u\l H:i') }}
-                        </span>
-                    </div>
-
-                    <div class="post-media-wrapper">
-                        @if ($post->file_type === 'image')
-                            <img src="{{ asset('storage/' . $post->file_path) }}" alt="Post Image">
-                        @elseif ($post->file_type === 'video')
-                            <video controls>
-                                <source src="{{ asset('storage/' . $post->file_path) }}" />
-                            </video>
-                        @endif
-                    </div>
-
-                    <div class="post-info">
-                        @if ($post->caption)
-                            <p>{{ $post->caption }}</p>
-                        @endif
-                        <small>{{ $post->likes->count() }} Likes • {{ $post->comments->count() }} Comments</small>
-                    </div>
-                </div>
+                @include('media-posts.partials.post', ['post' => $post])
             @endforeach
         </div>
 
-
-        <!-- Menampilkan pagination -->
-        {{-- {{ $posts->links() }} --}}
-
-        {{-- Loading Indicator --}}
+        <!-- Loading Indicator -->
         <div id="loading-indicator" class="hidden mt-4 text-center">
             <span>Loading...</span>
         </div>
@@ -56,6 +28,90 @@
             const loadMoreUrl = "{{ route('media-posts.load') }}";
         </script>
         <script src="{{ asset('js/scroll.js') }}" defer></script>
-    @endpush
 
+        <script>
+            $(document).ready(function() {
+                // Fungsi Like
+                $(document).on('click', '.like-button', function() {
+                    const button = $(this);
+                    const postId = button.data('id');
+
+                    $.ajax({
+                        url: '{{ route('like.toggle') }}',
+                        method: 'POST',
+                        data: {
+                            media_post_id: postId,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            // Update jumlah like
+                            $('.like-count-' + postId).text(response.likes_count);
+
+                            // Toggle warna tombol
+                            if (response.liked) {
+                                button.removeClass('text-gray-500').addClass('text-pink-500');
+                            } else {
+                                button.removeClass('text-pink-500').addClass('text-gray-500');
+                            }
+
+                            // Update angka like di dalam tombol
+                            button.find('.like-count').text(response.likes_count);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Like Error:', error);
+                        }
+                    });
+                });
+
+                // Toggle komentar
+                $(document).on('click', '.comment-toggle', function() {
+                    const postId = $(this).data('id');
+                    $('#comments-' + postId).toggleClass('hidden');
+                });
+
+                // Kirim komentar
+                $(document).on('submit', '.comment-form', function(e) {
+                    e.preventDefault();
+
+                    const form = $(this);
+                    const postId = form.data('id');
+                    const commentText = form.find('input[name="comment"]').val();
+
+                    $.ajax({
+                        url: '{{ route('comments.store', ['mediaPost' => ':postId']) }}'.replace(
+                            ':postId', postId),
+                        method: 'POST',
+                        data: {
+                            comment: commentText,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response && response.comment && response.comment.user) {
+                                const comment = response.comment;
+                                const timeAgo = moment(comment.created_at).fromNow();
+
+                                $('.comments-list-' + postId).append(`
+                                    <li>
+                                        <strong>${comment.user.name}</strong>: ${comment.comment}
+                                        <small class="text-gray-400">(${timeAgo})</small>
+                                    </li>
+                                `);
+
+                                // Update jumlah komentar
+                                const commentCountEl = $('.comment-count-' + postId);
+                                commentCountEl.text(parseInt(commentCountEl.text()) + 1);
+
+                                form.find('input[name="comment"]').val('');
+                            } else {
+                                console.error('Komentar atau user tidak lengkap:', response);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Comment Error:', error);
+                        }
+                    });
+                });
+            });
+        </script>
+    @endpush
 </x-app-layout>

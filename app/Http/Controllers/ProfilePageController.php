@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\MediaPost;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfilePageController extends Controller
 {
     // This method shows the user's profile page with their posts
     public function index()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $posts = MediaPost::where('user_id', $user->id)->latest()->get();
         $feedPerRow = $user->feed_per_row ?? 3;
 
@@ -20,15 +21,13 @@ class ProfilePageController extends Controller
 
     public function show(MediaPost $post)
     {
-
-        if ($post->user_id !== auth()->id()) {
+        if ($post->user_id !== Auth::id()) {
             abort(403);
         }
 
-
         return view('profile.post-show', [
             'post' => $post,
-            'user' => auth()->user(),
+            'user' => Auth::user(),
         ]);
     }
 
@@ -44,7 +43,7 @@ class ProfilePageController extends Controller
         $path = $file->store('media_posts', 'public');
 
         MediaPost::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'file_path' => $path,
             'file_type' => in_array($file->getClientOriginalExtension(), ['mp4', 'mov']) ? 'video' : 'image',
             'caption' => $request->caption,
@@ -56,8 +55,7 @@ class ProfilePageController extends Controller
 
     public function delete(MediaPost $post)
     {
-
-        if ($post->user_id !== auth()->id()) {
+        if ($post->user_id !== Auth::id()) {
             abort(403); // Jika bukan milik user, tampilkan 403
         }
 
@@ -68,7 +66,7 @@ class ProfilePageController extends Controller
 
     public function archive()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         $archivedPosts = MediaPost::onlyTrashed()
             ->where('user_id', $user->id)
@@ -88,7 +86,7 @@ class ProfilePageController extends Controller
 
     public function deletePermanent(MediaPost $post)
     {
-        if ($post->user_id !== auth()->id()) {
+        if ($post->user_id !== Auth::id()) {
             abort(403);
         }
 

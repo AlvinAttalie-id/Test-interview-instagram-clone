@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MediaPostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePageController;
@@ -23,9 +24,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Feed: menampilkan semua post dari semua user
-    Route::get('/feed', [FeedController::class, 'index'])->name('feed.index');
-
     // Komentar
     Route::post('/media-posts/{mediaPost}/comments', [CommentController::class, 'store'])->name('comments.store');
 
@@ -34,8 +32,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/media-posts', [MediaPostController::class, 'store'])->name('media-posts.store');
     // Load more posts untuk infinite scroll
     Route::get('/media-posts/load', [MediaPostController::class, 'loadMorePosts'])->name('media-posts.load');
+
     // Resource MediaPost terbatas hanya index, create, store
     Route::resource('media-posts', MediaPostController::class)->only(['index', 'create', 'store']);
+    Route::post('/like/toggle', [LikeController::class, 'toggle'])->name('like.toggle');
+    Route::post('/comments/{mediaPost}', [CommentController::class, 'store'])->name('comments.store');
 
     // ✅ Archive Page: menampilkan dan download media post user
     Route::get('/media-posts/archive', [MediaPostController::class, 'archive'])->name('media-posts.archive');

@@ -12,7 +12,8 @@
         <form method="GET" action="{{ route('media-posts.archive') }}">
             <label>Dari: <input type="date" name="start_date" value="{{ request('start_date') }}"></label>
             <label>Sampai: <input type="date" name="end_date" value="{{ request('end_date') }}"></label>
-            <button type="submit">Filter</button>
+            <button class="inline-block px-4 py-2 mt-1 text-white bg-blue-600 rounded cursor-pointer hover:bg-blue-700"
+                type="submit">Filter</button>
         </form>
 
         <div style="margin: 10px 0;">
