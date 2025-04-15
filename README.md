@@ -4,6 +4,12 @@
 
 > Proyek ini adalah aplikasi berbasis Laravel sebagai kerangka dasar untuk aplikasi Laravel.
 
+> ## Screenshot
+
+![Screenshot 1](public/images/screenshots/01-newsfeed.png)
+![Screenshot 1](public/images/screenshots/02-newsfeed.png)
+![Screenshot 1](public/images/screenshots/03-newsfeed.png)
+
 ## Tentang
 
 Proyek ini adalah aplikasi berbasis Laravel yang dibangun menggunakan framework Laravel versi terbaru (12.x), dengan berbagai alat pengembangan dan paket terintegrasi untuk mempermudah proses pengembangan.
@@ -139,12 +145,6 @@ Password : Admin123
 ```
 
 Pastikan untuk mencatat password yang dihasilkan di atas, karena dapat digunakan untuk login ke dalam aplikasi. Anda dapat login menggunakan akun `user` atau `admin` sesuai dengan kebutuhan.
-
-## Screenshot
-
-![Screenshot 1](public/images/screenshots/01-newsfeed.png)
-![Screenshot 1](public/images/screenshots/02-newsfeed.png)
-![Screenshot 1](public/images/screenshots/03-newsfeed.png)
 
 ## Lisensi
 
