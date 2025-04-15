@@ -154,11 +154,3 @@ Proyek ini adalah perangkat lunak sumber terbuka yang dilisensikan di bawah [lis
 
 -   [Laravel](https://laravel.com)
 -   [Composer](https://getcomposer.org)
-
-```
-
-```
-
-```
-
-```
