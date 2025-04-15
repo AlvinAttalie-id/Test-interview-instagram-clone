@@ -3,10 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedController;
+use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MediaPostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePageController;
+use App\Http\Controllers\UserListController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,8 +26,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Komentar
-    Route::post('/media-posts/{mediaPost}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/follow/{user}', [FollowerController::class, 'follow'])->name('follow');
+    Route::delete('/unfollow/{user}', [FollowerController::class, 'unfollow'])->name('unfollow');
+    Route::post('/toggle-follow/{user}', [FollowerController::class, 'toggle'])->name('follow.toggle');
+    Route::get('/users', [UserListController::class, 'index'])->name('users.index');
+    Route::get('/users/search', [UserListController::class, 'search'])->name('users.search');
 
     // Media Post (tambah post)
     Route::get('/media-posts/create', [MediaPostController::class, 'create'])->name('media-posts.create');
@@ -51,6 +56,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/archives', [ProfilePageController::class, 'archive'])->name('profile.archive');
     Route::patch('/profile/posts/{post}/restore', [ProfilePageController::class, 'restore'])->name('profile.posts.restore');
     Route::delete('/profile/posts/{post}/delete-permanent', [ProfilePageController::class, 'deletePermanent'])->name('profile.posts.delete-permanent');
+
+    Route::get('/user/{user}/followers', [ProfilePageController::class, 'followers'])->name('user.followers');
+    Route::get('/user/{user}/following', [ProfilePageController::class, 'following'])->name('user.following');
+    Route::get('/user/{username}', [ProfilePageController::class, 'viewUserProfile'])->name('user.profile');
 });
 
 // ✅ Route Khusus Admin

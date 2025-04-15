@@ -24,6 +24,10 @@
                         {{ __('Add Post') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index') || request()->routeIs('users.search')">
+                        {{ __('Explore Users') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('profile.page')" :active="request()->routeIs('profile.page')">
                         {{ __('My Profile') }}
                     </x-nav-link>
@@ -31,6 +35,7 @@
                     <x-nav-link :href="route('profile.archive')" :active="request()->routeIs('profile.archive')">
                         {{ __('Archive') }}
                     </x-nav-link>
+
                 </div>
             </div>
 

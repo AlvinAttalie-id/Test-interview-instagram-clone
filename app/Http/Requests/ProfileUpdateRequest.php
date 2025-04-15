@@ -17,14 +17,10 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
-            ],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $this->user()->id], // Validasi unik, kecuali untuk user yang sedang login
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $this->user()->id],
+            'profile_picture' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'bio' => ['nullable', 'string'],
         ];
     }
 }

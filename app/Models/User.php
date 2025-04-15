@@ -20,6 +20,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
     ];
@@ -66,5 +67,25 @@ class User extends Authenticatable
     public function mediaPosts()
     {
         return $this->hasMany(MediaPost::class);
+    }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'followed_id', 'follower_id');
+    }
+
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'followed_id');
+    }
+
+    public function isFollowing(User $user)
+    {
+        return $this->following()->where('followed_id', $user->id)->exists();
+    }
+
+    public function isFollowedBy(User $user)
+    {
+        return $this->followers()->where('follower_id', $user->id)->exists();
     }
 }

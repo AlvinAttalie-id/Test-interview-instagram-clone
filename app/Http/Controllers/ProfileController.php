@@ -31,29 +31,38 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $user->fill($request->validated());
+        // Validasi input
+        $validated = $request->validated();
 
+        // Isi data user dengan data yang divalidasi
+        $user->fill($validated);
+
+        // Jika email berubah, set email_verified_at menjadi null
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
-        $user->save();
+        // Jika username berubah, simpan perubahan tersebut
+        if ($user->isDirty('username')) {
+            $user->save();
+        }
 
+        // Simpan ke profile_settings jika ada data tambahan (foto profil atau bio)
         $data = [];
 
-        // Jika ada file profile picture
+        // Cek apakah ada foto profil yang diunggah
         if ($request->hasFile('profile_picture')) {
             $file = $request->file('profile_picture');
             $path = $file->store('profile_pictures', 'public');
             $data['profile_picture'] = $path;
         }
 
-        // Tambahkan bio jika tersedia
+        // Cek jika ada perubahan bio
         if ($request->filled('bio')) {
             $data['bio'] = $request->input('bio');
         }
 
-        // Simpan ke profile_settings jika ada data
+        // Simpan atau perbarui pengaturan profil
         if (!empty($data)) {
             ProfileSetting::updateOrCreate(
                 ['user_id' => $user->id],
@@ -61,9 +70,9 @@ class ProfileController extends Controller
             );
         }
 
+        // Redirect dengan status berhasil diperbarui
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
-
 
     /**
      * Delete the user's account.

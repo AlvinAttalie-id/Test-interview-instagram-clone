@@ -1,7 +1,11 @@
 <div class="p-4 mb-4 bg-white rounded-lg shadow-md post-card">
     {{-- Username dan Dropdown --}}
     <div class="flex items-center justify-between mb-2">
-        <span class="font-semibold">{{ $post->user->name }}</span>
+        <!-- Link ke profil pengguna -->
+        <a href="{{ route('user.profile', $post->user->username) }}" class="font-semibold text-blue-500 hover:underline">
+            {{ $post->user->name }}
+        </a>
+
         <div class="relative">
             <button class="text-gray-500 hover:text-black focus:outline-none">⋯</button>
             <div class="absolute right-0 z-10 hidden mt-2 bg-white border rounded shadow dropdown-menu">
@@ -17,7 +21,7 @@
             <img src="{{ asset('storage/' . $post->file_path) }}" alt="Post Image" class="w-full rounded-md">
         @elseif ($post->file_type === 'video')
             <video controls class="w-full rounded-md">
-                <source src="{{ asset('storage/' . $post->file_path) }}">
+                <source src="{{ asset('storage/' . $post->file_path) }}" />
             </video>
         @endif
     </div>
