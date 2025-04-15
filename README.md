@@ -25,8 +25,6 @@ git clone https://your-repository-url
 cd your-project-folder
 ```
 
-````
-
 ### Siapkan Environment
 
 -   Salin file `.env.example` menjadi `.env`:
@@ -160,4 +158,7 @@ Proyek ini adalah perangkat lunak sumber terbuka yang dilisensikan di bawah [lis
 ```
 
 ```
-````
+
+```
+
+```
