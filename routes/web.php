@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/toggle-follow/{user}', [FollowerController::class, 'toggle'])->name('follow.toggle');
     Route::get('/users', [UserListController::class, 'index'])->name('users.index');
     Route::get('/users/search', [UserListController::class, 'search'])->name('users.search');
+    Route::get('/users/load', [UserListController::class, 'loadUsers'])->name('users.load');
 
     // Media Post (tambah post)
     Route::get('/media-posts/create', [MediaPostController::class, 'create'])->name('media-posts.create');

@@ -65,7 +65,7 @@ class MediaPostController extends Controller
     {
         $format = $request->get('format', 'pdf');
 
-        $query = MediaPost::where('user_id', Auth::id()); // Menggunakan Auth facade
+        $query = MediaPost::where('user_id', Auth::id());
 
         if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);

@@ -7,6 +7,14 @@
 
     <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <h2>Daftar Pengguna</h2>
+
+        <!-- Form Pencarian -->
+        <form action="{{ route('users.index') }}" method="GET" class="mb-4">
+            <input type="text" name="q" value="{{ request()->input('q') }}" placeholder="Cari berdasarkan username"
+                class="p-2 border border-gray-300 rounded-md">
+            <button type="submit" class="p-2 ml-2 text-white bg-blue-500 rounded-md">Cari</button>
+        </form>
+
         <div class="space-y-4">
             @foreach ($users as $user)
                 <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">

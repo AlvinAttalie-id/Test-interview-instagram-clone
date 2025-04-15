@@ -31,6 +31,19 @@
         <p class="mb-2 text-sm text-gray-700">{{ $post->caption }}</p>
     @endif
 
+    {{-- Timestamp --}}
+    <div class="text-xs text-gray-500">
+        @if ($post->created_at->diffInSeconds(now()) < 60)
+            <span>{{ $post->created_at->diffForHumans() }}</span>
+        @elseif ($post->created_at->diffInMinutes(now()) < 60)
+            <span>{{ $post->created_at->diffForHumans() }}</span>
+        @elseif ($post->created_at->diffInHours(now()) < 24)
+            <span>{{ $post->created_at->diffForHumans() }}</span>
+        @else
+            <span>{{ $post->created_at->format('l, j F Y \| H:i') }}</span>
+        @endif
+    </div>
+
     {{-- Action buttons like & comment --}}
     <div class="flex items-center justify-start gap-6 pt-2 mb-2 text-gray-600 border-t">
         @php

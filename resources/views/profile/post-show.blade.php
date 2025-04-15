@@ -11,14 +11,18 @@
         </div>
 
         <div class="p-4 mb-4 bg-white rounded-lg shadow-md post-card">
-            {{-- Username dan dropdown --}}
+            {{-- Username dan Dropdown --}}
             <div class="flex items-center justify-between mb-2">
-                <span class="font-semibold">{{ $post->user->name }}</span>
+                <!-- Link ke profil pengguna -->
+                <a href="{{ route('user.profile', $post->user->username) }}"
+                    class="font-semibold text-blue-500 hover:underline">
+                    {{ $post->user->name }}
+                </a>
+
                 <div class="relative">
-                    <button class="text-gray-500 hover:text-black focus:outline-none"
-                        onclick="toggleDropdown(event)">⋯</button>
+                    <button class="text-gray-500 hover:text-black focus:outline-none">⋯</button>
                     <div class="absolute right-0 z-10 hidden mt-2 bg-white border rounded shadow dropdown-menu">
-                        <!-- Opsi untuk menghapus postingan -->
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Edit</a>
                         <form action="{{ route('profile.posts.delete', $post) }}" method="POST"
                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus postingan ini?');">
                             @csrf
@@ -35,7 +39,7 @@
                     <img src="{{ asset('storage/' . $post->file_path) }}" alt="Post Image" class="w-full rounded-md">
                 @elseif ($post->file_type === 'video')
                     <video controls class="w-full rounded-md">
-                        <source src="{{ asset('storage/' . $post->file_path) }}">
+                        <source src="{{ asset('storage/' . $post->file_path) }}" />
                     </video>
                 @endif
             </div>
@@ -45,29 +49,41 @@
                 <p class="mb-2 text-sm text-gray-700">{{ $post->caption }}</p>
             @endif
 
-            {{-- Like & Comment Count --}}
-            <div class="mb-2 text-xs text-gray-500">
-                <span class="like-count-{{ $post->id }}">{{ $post->likes->count() }}</span> Likes •
-                <span class="comment-count-{{ $post->id }}">{{ $post->comments->count() }}</span> Comments
+            {{-- Timestamp --}}
+            <div class="text-xs text-gray-500">
+                @if ($post->created_at->diffInSeconds(now()) < 60)
+                    <span>{{ $post->created_at->diffForHumans() }}</span>
+                @elseif ($post->created_at->diffInMinutes(now()) < 60)
+                    <span>{{ $post->created_at->diffForHumans() }}</span>
+                @elseif ($post->created_at->diffInHours(now()) < 24)
+                    <span>{{ $post->created_at->diffForHumans() }}</span>
+                @else
+                    <span>{{ $post->created_at->format('l, j F Y \| H:i') }}</span>
+                @endif
             </div>
 
-            {{-- Action buttons --}}
-            <div class="flex items-center justify-around pt-2 mb-2 text-gray-600 border-t">
+            {{-- Action buttons like & comment --}}
+            <div class="flex items-center justify-start gap-6 pt-2 mb-2 text-gray-600 border-t">
                 @php
                     $isLiked = $post->likes->contains('user_id', auth()->id());
                 @endphp
 
                 {{-- Like Button --}}
-                <button class="flex items-center gap-1 like-button {{ $isLiked ? 'text-pink-500' : 'text-gray-500' }}"
+                <button
+                    class="flex items-center gap-1 like-button {{ $isLiked ? 'text-pink-500' : 'text-gray-500' }} hover:text-pink-500"
                     data-id="{{ $post->id }}">
-                    <i class="fa-heart {{ $isLiked ? 'fas' : 'far' }} like-icon"></i>
-                    <span class="like-count">{{ $post->likes->count() }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 21l-1-1c-5-5-7-7.5-7-10A4 4 0 0112 3a4 4 0 017 4c0 2.5-2 5-7 10l-1 1z" />
+                    </svg>
+                    <span class="like-count like-count-{{ $post->id }}">{{ $post->likes->count() }}</span>
                 </button>
 
                 {{-- Comment Toggle --}}
-                <button class="flex items-center gap-1 hover:text-blue-500 comment-toggle"
-                    data-id="{{ $post->id }}">
-                    💬 <span class="comment-count">{{ $post->comments->count() }}</span>
+                <button class="flex items-center gap-1 comment-toggle" data-id="{{ $post->id }}">
+                    💬 <span
+                        class="comment-count comment-count-{{ $post->id }}">{{ $post->comments->count() }}</span>
                 </button>
             </div>
 
@@ -101,7 +117,7 @@
             function toggleDropdown(event) {
                 event.stopPropagation();
                 let dropdownMenu = event.target.closest('button').nextElementSibling;
-                dropdownMenu.classList.toggle('hidden'); // Menyembunyikan atau menampilkan dropdown
+                dropdownMenu.classList.toggle('hidden');
             }
 
             // Tutup dropdown jika klik di luar elemen

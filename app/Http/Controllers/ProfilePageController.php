@@ -9,7 +9,6 @@ use App\Models\User;
 
 class ProfilePageController extends Controller
 {
-    // Menampilkan halaman profil pengguna dengan postingan mereka
     public function index()
     {
         $user = Auth::user();
@@ -19,7 +18,6 @@ class ProfilePageController extends Controller
         return view('profile.index', compact('user', 'posts', 'feedPerRow'));
     }
 
-    // Menampilkan detail postingan milik pengguna tertentu
     public function show(MediaPost $post)
     {
         if ($post->user_id !== Auth::id()) {
@@ -32,7 +30,6 @@ class ProfilePageController extends Controller
         ]);
     }
 
-    // Menyimpan postingan baru
     public function store(Request $request)
     {
         $request->validate([
@@ -53,7 +50,6 @@ class ProfilePageController extends Controller
         return back()->with('success', 'Post successfully uploaded!');
     }
 
-    // Menghapus postingan
     public function delete(MediaPost $post)
     {
         if ($post->user_id !== Auth::id()) {
@@ -65,7 +61,6 @@ class ProfilePageController extends Controller
         return redirect()->route('profile.page')->with('success', 'Post telah dihapus.');
     }
 
-    // Menampilkan arsip postingan
     public function archive()
     {
         $user = Auth::user();
@@ -78,7 +73,6 @@ class ProfilePageController extends Controller
         return view('profile.archive', compact('user', 'archivedPosts'));
     }
 
-    // Mengembalikan postingan yang diarsipkan
     public function restore($id)
     {
         $post = MediaPost::withTrashed()->findOrFail($id);
@@ -87,7 +81,6 @@ class ProfilePageController extends Controller
         return redirect()->route('profile.archive')->with('success', 'Post berhasil dipulihkan.');
     }
 
-    // Menghapus postingan secara permanen
     public function deletePermanent(MediaPost $post)
     {
         if ($post->user_id !== Auth::id()) {
@@ -99,7 +92,6 @@ class ProfilePageController extends Controller
         return redirect()->route('profile.archive')->with('success', 'Post telah dihapus secara permanen.');
     }
 
-    // Menampilkan daftar followers
     public function followers(User $user)
     {
         $followers = $user->followers()->with('profileSetting')->get();
@@ -107,7 +99,6 @@ class ProfilePageController extends Controller
         return view('profile.followers', compact('user', 'followers'));
     }
 
-    // Menampilkan daftar following
     public function following(User $user)
     {
         $following = $user->following()->with('profileSetting')->get();
@@ -119,7 +110,6 @@ class ProfilePageController extends Controller
     {
         $user = User::where('username', $username)->firstOrFail();
         $posts = MediaPost::where('user_id', $user->id)->latest()->get();
-        // Ganti 'followed_user_id' menjadi 'followed_id'
         $isFollowed = Auth::check() ? Auth::user()->following()->where('followed_id', $user->id)->exists() : false;
 
         return view('profile.user-profile', compact('user', 'posts', 'isFollowed'));
@@ -133,7 +123,6 @@ class ProfilePageController extends Controller
         $posts = $user->mediaPosts()->latest()->get();
         $feedPerRow = $user->feed_per_row ?? 3;
 
-        // Ganti 'followed_user_id' menjadi 'followed_id'
         $isFollowed = Auth::check() ? Auth::user()->following()->where('followed_id', $user->id)->exists() : false;
 
         return view('profile.user-profile', compact('user', 'posts', 'feedPerRow', 'isFollowed'));

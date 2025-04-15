@@ -8,11 +8,19 @@ use Illuminate\Support\Facades\Auth;
 
 class UserListController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $currentUser = Auth::user();
+        $keyword = $request->input('q', '');
 
+        // Mengambil pengguna yang belum di-follow
         $users = User::where('id', '!=', $currentUser->id)
+            ->where(function ($query) use ($keyword) {
+                $query->where('username', 'like', "%{$keyword}%");
+            })
+            ->whereDoesntHave('followers', function ($query) use ($currentUser) {
+                $query->where('follower_id', $currentUser->id);
+            })
             ->with('followers')
             ->get()
             ->map(function ($user) use ($currentUser) {
@@ -20,7 +28,7 @@ class UserListController extends Controller
                 return $user;
             });
 
-        return view('users.index', compact('users'));
+        return view('users.index', compact('users', 'keyword'));
     }
 
     public function search(Request $request)
@@ -30,8 +38,10 @@ class UserListController extends Controller
 
         $users = User::where('id', '!=', $currentUser->id)
             ->where(function ($query) use ($keyword) {
-                $query->where('name', 'like', "%{$keyword}%")
-                    ->orWhere('email', 'like', "%{$keyword}%");
+                $query->where('username', 'like', "%{$keyword}%");
+            })
+            ->whereDoesntHave('followers', function ($query) use ($currentUser) {
+                $query->where('follower_id', $currentUser->id);
             })
             ->with('followers')
             ->get()
