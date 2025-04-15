@@ -13,7 +13,6 @@ class UserListController extends Controller
         $currentUser = Auth::user();
         $keyword = $request->input('q', '');
 
-        // Mengambil pengguna yang belum di-follow
         $users = User::where('id', '!=', $currentUser->id)
             ->where(function ($query) use ($keyword) {
                 $query->where('username', 'like', "%{$keyword}%");
@@ -22,6 +21,7 @@ class UserListController extends Controller
                 $query->where('follower_id', $currentUser->id);
             })
             ->with('followers')
+            ->take(5)
             ->get()
             ->map(function ($user) use ($currentUser) {
                 $user->is_followed = $user->followers->contains($currentUser->id);
@@ -44,6 +44,7 @@ class UserListController extends Controller
                 $query->where('follower_id', $currentUser->id);
             })
             ->with('followers')
+            ->take(5)
             ->get()
             ->map(function ($user) use ($currentUser) {
                 $user->is_followed = $user->followers->contains($currentUser->id);
