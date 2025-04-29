@@ -12,7 +12,7 @@ class MediaPostSeeder extends Seeder
 {
     public function run(): void
     {
-        $users = User::all();
+        $users = User::role('user')->get(); // hanya user role 'user'
 
         $captions = [
             'Tung tung tung sahur!',
@@ -25,64 +25,69 @@ class MediaPostSeeder extends Seeder
             'Yang penting kompak 😁',
             'Lelah tapi senang!',
             'Puasa hari ke sekian...',
-            'Ayo semangat sahur!',
-            'Habis sahur langsung kerja!',
-            'Siapa siap sahur?',
-            'Makanan favorit sahur!',
-            'Ngebaperin orang sahur nih!',
-            'Gue selalu tidur pas sahur',
-            'Tunggu sahur, terus tidur lagi',
-            'Jangan lupa kasih yang manis!',
-            'Sahur penuh berkah!',
-            'Cuma bisa liat makanan enak',
-            'Niat sahur biar kuat puasa',
-            'Tunggu waktu buka puasa',
-            'Semangat puasa meski lapar',
-            'Buka puasa yuk!',
-            'Jangan lemes sahur dong!'
         ];
 
         $comments = [
             'Kocak banget ini wkwkwk',
             'Aing ngakak asli 😂',
             'Ini beneran terjadi?',
-            'Haram banget ini sih haha',
             'Wkwkwk parah!',
             'Gue save dulu ya',
             'Tag temen lo!',
-            'Ini mah udah level dewa',
-            'Astagfirullah ngakak',
-            'Tolong ini lucu beneran!'
         ];
 
-        for ($i = 1; $i <= 51; $i++) {
-            $user = $users->random();
+        $videoFiles = ['test-2.mp4', 'test-3.mp4', 'test-4.mp4', 'test-5.mp4', 'test-6.mp4'];
+        $maxFoto = 51;
+        $totalFoto = 0;
 
-            $post = MediaPost::create([
-                'user_id' => $user->id,
-                'caption' => fake()->randomElement($captions),
-                'file_path' => "media-posts/{$i}.jpg",
-                'file_type' => 'image',
+        foreach ($users as $user) {
+            // 2 video post per user
+            for ($i = 0; $i < 2; $i++) {
+                $videoFile = fake()->randomElement($videoFiles);
+
+                $this->createPost($user, "media-posts/{$videoFile}", 'video', $captions, $comments);
+            }
+
+            // 8-12 foto post per user supaya total mendekati 1000
+            $fotoPosts = rand(8, 12);
+            for ($j = 0; $j < $fotoPosts; $j++) {
+                $fotoNumber = rand(1, $maxFoto);
+
+                $this->createPost($user, "media-posts/{$fotoNumber}.jpg", 'image', $captions, $comments);
+
+                $totalFoto++;
+            }
+        }
+
+        $this->command->info("Total Foto Posts Generated: {$totalFoto}");
+    }
+
+    private function createPost($user, $filePath, $fileType, $captions, $comments)
+    {
+        $post = MediaPost::create([
+            'user_id' => $user->id,
+            'caption' => fake()->randomElement($captions),
+            'file_path' => $filePath,
+            'file_type' => $fileType,
+        ]);
+
+        // Likes random 3-8
+        $likers = User::inRandomOrder()->limit(rand(3, 8))->get();
+        foreach ($likers as $liker) {
+            Like::create([
+                'media_post_id' => $post->id,
+                'user_id' => $liker->id,
             ]);
+        }
 
-            // Like acak dari 3-10 user
-            $likedUsers = $users->random(rand(3, 10));
-            foreach ($likedUsers as $liker) {
-                Like::create([
-                    'media_post_id' => $post->id,
-                    'user_id' => $liker->id,
-                ]);
-            }
-
-            // Comment acak dari 3-8 user
-            $commentUsers = $users->random(rand(3, 8));
-            foreach ($commentUsers as $commenter) {
-                Comment::create([
-                    'media_post_id' => $post->id,
-                    'user_id' => $commenter->id,
-                    'comment' => fake()->randomElement($comments),
-                ]);
-            }
+        // Comments random 2-5
+        $commenters = User::inRandomOrder()->limit(rand(2, 5))->get();
+        foreach ($commenters as $commenter) {
+            Comment::create([
+                'media_post_id' => $post->id,
+                'user_id' => $commenter->id,
+                'comment' => fake()->randomElement($comments),
+            ]);
         }
     }
 }

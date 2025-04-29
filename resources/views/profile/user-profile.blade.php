@@ -9,9 +9,12 @@
         {{-- Foto Profil dan Info --}}
         <div class="flex flex-col md:flex-row md:items-start md:space-x-10">
             <div class="w-20 h-20 overflow-hidden border border-gray-300 rounded-full shadow md:w-24 md:h-24">
-                <img src="{{ $user->profileSetting?->profile_picture ? asset('storage/' . $user->profileSetting->profile_picture) : $user->profile_photo_url }}"
+                <img src="{{ $user->profileSetting?->profile_picture
+                    ? asset('storage/' . $user->profileSetting->profile_picture)
+                    : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=0D8ABC&color=fff&bold=true' }}"
                     alt="{{ $user->username }}" class="object-cover w-full h-full">
             </div>
+
 
             <div class="flex-1 mt-4 md:mt-0">
                 <div class="flex flex-col mb-4 md:flex-row md:items-center md:space-x-6">
@@ -56,9 +59,7 @@
                 </div>
 
                 <div class="space-y-1 text-sm text-gray-800">
-                    @if ($user->name)
-                        <div class="font-semibold">{{ $user->name }}</div>
-                    @endif
+
 
                     @if ($user->profileSetting?->bio)
                         <div>{{ $user->profileSetting->bio }}</div>

@@ -6,53 +6,34 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Buat role jika belum ada
         Role::firstOrCreate(['name' => 'admin']);
         Role::firstOrCreate(['name' => 'user']);
 
-        // Daftar nama yang ingin dibuat
-        $userNames = [
-            'Katsura',
-            'Wednesday',
-            'TungTungTug',
-            'Mikasa',
-            'Tanjiro',
-            'Violet',
-            'Gojo',
-            'Luffy',
-            'Levi',
-            'Killua',
-        ];
-
-        foreach ($userNames as $name) {
-            $email = strtolower($name) . '@example.com';
-            $username = strtolower($name);
-            $password = $name . '123'; // Password berdasarkan nama
+        // Generate 100 users
+        for ($i = 1; $i <= 100; $i++) {
+            $name = fake()->name();
+            $email = Str::slug($name) . $i . '@example.com';
+            $username = Str::slug($name) . $i;
 
             $user = User::create([
                 'name' => $name,
                 'email' => $email,
                 'username' => $username,
-                'password' => Hash::make($password),
+                'password' => Hash::make('password123'),
             ]);
 
             $user->assignRole('user');
 
-            // Tampilkan informasi user di terminal
-            $this->command->line("Name     : {$user->name}");
-            $this->command->line("Email    : {$user->email}");
-            $this->command->line("Username : {$user->username}");
-            $this->command->line("Role     : user");
-            $this->command->line("Password : {$password}");
-            $this->command->line(str_repeat('-', 40));
+            $this->command->line("User Created: {$username}");
         }
 
-        // Buat admin juga
+        // Admin
         $admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
@@ -61,11 +42,6 @@ class UserSeeder extends Seeder
         ]);
         $admin->assignRole('admin');
 
-        $this->command->info("Admin:");
-        $this->command->line("Name     : {$admin->name}");
-        $this->command->line("Email    : {$admin->email}");
-        $this->command->line("Username : {$admin->username}");
-        $this->command->line("Role     : admin");
-        $this->command->line("Password : Admin123");
+        $this->command->info('Admin Created');
     }
 }

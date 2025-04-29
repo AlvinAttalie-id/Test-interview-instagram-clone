@@ -35,9 +35,7 @@
                 </div>
 
                 <div class="space-y-1 text-sm text-gray-800">
-                    @if ($user->name)
-                        <div class="font-semibold">{{ $user->name }}</div>
-                    @endif
+
 
                     @if ($user->profileSetting?->bio)
                         <div>{{ $user->profileSetting->bio }}</div>
