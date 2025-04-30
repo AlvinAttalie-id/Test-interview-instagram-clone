@@ -20,17 +20,22 @@
                 </a>
 
                 <div class="relative">
-                    <button class="text-gray-500 hover:text-black focus:outline-none">⋯</button>
+                    <button onclick="toggleDropdown(event)" class="text-gray-500 hover:text-black focus:outline-none">
+                        ⋯
+                    </button>
                     <div class="absolute right-0 z-10 hidden mt-2 bg-white border rounded shadow dropdown-menu">
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Edit</a>
                         <form action="{{ route('profile.posts.delete', $post) }}" method="POST"
                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus postingan ini?');">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="block px-4 py-2 text-sm hover:bg-gray-100">Hapus</button>
+                            <button type="submit" class="block w-full px-4 py-2 text-sm text-left hover:bg-gray-100">
+                                Hapus
+                            </button>
                         </form>
                     </div>
                 </div>
+
             </div>
 
             {{-- Media --}}
@@ -113,22 +118,21 @@
 
     @push('scripts')
         <script>
-            // Fungsi untuk menampilkan atau menyembunyikan dropdown menu
             function toggleDropdown(event) {
                 event.stopPropagation();
-                let dropdownMenu = event.target.closest('button').nextElementSibling;
-                dropdownMenu.classList.toggle('hidden');
+                const dropdown = event.currentTarget.nextElementSibling;
+                dropdown.classList.toggle('hidden');
             }
 
-            // Tutup dropdown jika klik di luar elemen
+            // Tutup dropdown jika klik di luar
             document.addEventListener('click', function(event) {
-                let dropdownMenus = document.querySelectorAll('.dropdown-menu');
-                dropdownMenus.forEach(function(menu) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
                     if (!menu.contains(event.target)) {
                         menu.classList.add('hidden');
                     }
                 });
             });
+
 
             $(document).ready(function() {
                 // Fungsi Like
@@ -193,11 +197,11 @@
                                 const timeAgo = moment(comment.created_at).fromNow();
 
                                 $('.comments-list-' + postId).append(`
-                                    <li>
-                                        <strong>${comment.user.name}</strong>: ${comment.comment}
-                                        <small class="text-gray-400">(${timeAgo})</small>
-                                    </li>
-                                `);
+        <li>
+            <strong>${comment.user.name}</strong>: ${comment.comment}
+            <small class="text-gray-400">(${timeAgo})</small>
+        </li>
+        `);
 
                                 // Update jumlah komentar
                                 const commentCountEl = $('.comment-count-' + postId);
