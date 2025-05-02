@@ -42,7 +42,9 @@ class MediaPostController extends Controller
             'file_type' => $fileType,
         ]);
 
-        return redirect()->route('media-posts.index')->with('success', 'Post berhasil ditambahkan.');
+        return redirect()
+            ->route('media-posts.index')
+            ->with('success', 'Post berhasil ditambahkan.');
     }
 
     public function archive(Request $request)

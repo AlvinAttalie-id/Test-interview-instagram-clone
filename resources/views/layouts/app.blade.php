@@ -16,12 +16,30 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 
 </head>
 
 <body class="font-sans antialiased">
+    @if (session('success'))
+        <x-alert :message="session('success')" type="success" />
+    @endif
+
+    @if (session('error'))
+        <x-alert :message="session('error')" type="error" />
+    @endif
+
+    @if (session('info'))
+        <x-alert :message="session('info')" type="info" />
+    @endif
+
+    @if (session('warning'))
+        <x-alert :message="session('warning')" type="warning" />
+    @endif
+
+
     <div class="min-h-screen bg-gray-100">
         @include('layouts.navigation')
 
