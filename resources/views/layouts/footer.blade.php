@@ -15,7 +15,10 @@
             class="flex flex-col items-center justify-center w-full py-2 hover:text-blue-500 {{ request()->routeIs('users.index', 'users.search.*') ? 'text-blue-500 font-semibold' : '' }}">
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
                 stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+                <path d="M16 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M7 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
+                <path d="M23 11h-6" />
+                <path d="M20 8v6" />
             </svg>
             <span class="text-xs">Search User</span>
         </a>
