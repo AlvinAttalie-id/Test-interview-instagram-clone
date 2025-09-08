@@ -2,9 +2,11 @@
     {{-- Username dan Dropdown --}}
     <div class="flex items-center justify-between mb-2">
         <!-- Link ke profil pengguna -->
-        <a href="{{ route('user.profile', $post->user->username) }}" class="font-semibold text-blue-500 hover:underline">
+        <a href="{{ route('user.profile', ['username' => $post->user->username]) }}"
+            class="font-semibold text-blue-500 hover:underline">
             {{ $post->user->name }}
         </a>
+
 
         <div class="relative">
             <button class="text-gray-500 hover:text-black focus:outline-none">⋯</button>
