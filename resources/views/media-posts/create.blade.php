@@ -47,7 +47,7 @@
                     class="w-full mt-1 border-gray-300 rounded shadow-sm">
             </div>
 
-            <div>
+            <div class="pb-12">
                 <button type="submit" class="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
                     Upload
                 </button>
